@@ -22,6 +22,18 @@ class Container {
   createToDoDiv(title, data, index) {
     const div = document.createElement("div");
     div.textContent = title;
+
+    // 更新ボタンを作成
+    const updateButton = document.createElement("input");
+    updateButton.type = "button";
+    updateButton.name = "update";
+    updateButton.value = "更新";
+    updateButton.addEventListener("click", (event) => {
+      const newTitle = window.prompt("test");
+      data.updateToDo(newTitle, index);
+    });
+
+    // 削除ボタンを作成
     const deleteButton = document.createElement("input");
     deleteButton.type = "button";
     deleteButton.name = "delete";
@@ -29,6 +41,8 @@ class Container {
     deleteButton.addEventListener("click", (event) => {
       data.removeToDo(index);
     });
+
+    div.appendChild(updateButton);
     div.appendChild(deleteButton);
     return div;
   }
@@ -48,6 +62,7 @@ class ToDoData {
   }
   updateToDo(title, index) {
     this.list[index] = title;
+    this.container.show(this);
   }
   removeToDo(index) {
     delete this.list[index];
@@ -63,4 +78,6 @@ input_submit.addEventListener("click", function (e) {
   const input_name = document.querySelector("input[name=title]");
   const title = input_name.value;
   data.addToDo(title);
+
+  input_name.value = "";
 });
