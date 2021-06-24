@@ -51,9 +51,4 @@ input_submit.addEventListener("click", function (e) {
   const input_name = document.querySelector("input[name=title]");
   const title = input_name.value;
   data.addToDo(title);
-
-  // const container = document.getElementById("container");
-  // const div = document.createElement("div");
-  // div.textContent = title;
-  // container.appendChild(div);
 });
