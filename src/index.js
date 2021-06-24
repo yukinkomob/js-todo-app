@@ -58,23 +58,24 @@ class ToDoData {
     } else {
       this.list = [];
     }
+    this.container.show(this);
   }
   list() {
     return this.list;
   }
   addToDo(title) {
     this.list.push(title);
-    LSController.save();
+    LSController.save(this);
     this.container.show(this);
   }
   updateToDo(title, index) {
     this.list[index] = title;
-    LSController.save();
+    LSController.save(this);
     this.container.show(this);
   }
   removeToDo(index) {
-    delete this.list[index];
-    LSController.save();
+    this.list.splice(index, 1);
+    LSController.save(this);
     this.container.show(this);
   }
 }
@@ -83,10 +84,21 @@ class LSController {
   static save(data) {
     // TODO localStorageにlistの値を保存
     console.log("save");
+    const json = JSON.stringify(data.list);
+    localStorage.setItem("todoList", json);
   }
   static load() {
     // TODO localStorageからlistの値を読み込み
     console.log("load");
+    let getjson;
+    try {
+      getjson = localStorage.getItem("todoList");
+      console.log("list: " + getjson);
+      return JSON.parse(getjson);
+    } catch (e) {
+      console.log(e.message);
+      return [];
+    }
   }
 }
 
