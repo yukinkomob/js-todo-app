@@ -29,7 +29,7 @@ class Container {
     updateButton.name = "update";
     updateButton.value = "更新";
     updateButton.addEventListener("click", (event) => {
-      const newTitle = window.prompt("test");
+      const newTitle = window.prompt("ToDo名を入力してください");
       data.updateToDo(newTitle, index);
     });
 
@@ -51,22 +51,42 @@ class Container {
 class ToDoData {
   constructor() {
     this.container = new Container();
-    this.list = [];
+    const list = LSController.load();
+    // Null合体演算子を利用するとコードの色表記がおかしくなるので、if~elseを利用
+    if (list) {
+      this.list = list;
+    } else {
+      this.list = [];
+    }
   }
   list() {
     return this.list;
   }
   addToDo(title) {
     this.list.push(title);
+    LSController.save();
     this.container.show(this);
   }
   updateToDo(title, index) {
     this.list[index] = title;
+    LSController.save();
     this.container.show(this);
   }
   removeToDo(index) {
     delete this.list[index];
+    LSController.save();
     this.container.show(this);
+  }
+}
+
+class LSController {
+  static save(data) {
+    // TODO localStorageにlistの値を保存
+    console.log("save");
+  }
+  static load() {
+    // TODO localStorageからlistの値を読み込み
+    console.log("load");
   }
 }
 
