@@ -82,18 +82,13 @@ class ToDoData {
 
 class LSController {
   static save(data) {
-    // TODO localStorageにlistの値を保存
-    console.log("save");
     const json = JSON.stringify(data.list);
     localStorage.setItem("todoList", json);
   }
   static load() {
-    // TODO localStorageからlistの値を読み込み
-    console.log("load");
     let getjson;
     try {
       getjson = localStorage.getItem("todoList");
-      console.log("list: " + getjson);
       return JSON.parse(getjson);
     } catch (e) {
       console.log(e.message);
