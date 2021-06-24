@@ -1,24 +1,36 @@
 class Container {
   show(data) {
     const list = data.list;
-    // console.log(list);
     let container = document.getElementById("container");
 
     // 子要素を削除（div id="container"を再作成）
-    const clone = container.cloneNode(false);
-    container.parentNode.replaceChild(clone, container);
+    this.resetContainer(container);
 
     // containerを再取得
     container = document.getElementById("container");
 
     // 子要素を追加
-    list.forEach((title) => {
-      // console.log(title);
-      const div = document.createElement("div");
-      div.textContent = title;
+    list.forEach((title, index) => {
+      const div = this.createToDoDiv(title, data, index);
       container.appendChild(div);
-      console.log(container);
     });
+  }
+  resetContainer(container) {
+    const clone = container.cloneNode(false);
+    container.parentNode.replaceChild(clone, container);
+  }
+  createToDoDiv(title, data, index) {
+    const div = document.createElement("div");
+    div.textContent = title;
+    const deleteButton = document.createElement("input");
+    deleteButton.type = "button";
+    deleteButton.name = "delete";
+    deleteButton.value = "削除";
+    deleteButton.addEventListener("click", (event) => {
+      data.removeToDo(index);
+    });
+    div.appendChild(deleteButton);
+    return div;
   }
 }
 
@@ -32,14 +44,14 @@ class ToDoData {
   }
   addToDo(title) {
     this.list.push(title);
-    // console.log(this);
     this.container.show(this);
   }
   updateToDo(title, index) {
     this.list[index] = title;
   }
-  removeToDo(title, index) {
+  removeToDo(index) {
     delete this.list[index];
+    this.container.show(this);
   }
 }
 
