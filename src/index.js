@@ -10,8 +10,8 @@ class Container {
     container = document.getElementById("container");
 
     // 子要素を追加
-    list.forEach((title, index) => {
-      const div = this.createToDoDiv(title, data, index);
+    list.forEach((item, index) => {
+      const div = this.createToDoDiv(item.title, data, index);
       container.appendChild(div);
     });
   }
@@ -23,13 +23,32 @@ class Container {
     const div = document.createElement("div");
     div.textContent = title;
 
+    // 完了ボタンを作成
+    const completeButton = document.createElement("input");
+    completeButton.type = "button";
+    completeButton.name = "complete";
+    const isComplete = data.isCompleteToDO(index);
+    completeButton.value = isComplete ? "未完了" : "完了";
+    if (isComplete) {
+      completeButton.addEventListener("click", (event) => {
+        data.uncompleteToDo(index);
+      });
+    } else {
+      completeButton.addEventListener("click", (event) => {
+        data.completeToDo(index);
+      });
+    }
+
     // 更新ボタンを作成
     const updateButton = document.createElement("input");
     updateButton.type = "button";
     updateButton.name = "update";
     updateButton.value = "更新";
     updateButton.addEventListener("click", (event) => {
-      const newTitle = window.prompt("ToDo名を入力してください");
+      let newTitle = window.prompt("ToDo名を入力してください");
+      if (data.isCompleteToDO(index)) {
+        newTitle = "* " + newTitle;
+      }
       data.updateToDo(newTitle, index);
     });
 
@@ -42,9 +61,34 @@ class Container {
       data.removeToDo(index);
     });
 
+    div.appendChild(completeButton);
     div.appendChild(updateButton);
     div.appendChild(deleteButton);
     return div;
+  }
+}
+
+class ToDoItem {
+  constructor(title, isComplete = false) {
+    this.title = title;
+    this.isComplete = isComplete;
+  }
+  setTitle(title) {
+    this.title = title;
+  }
+  getTitle() {
+    return this.title;
+  }
+  isComplete() {
+    return this.isComplete;
+  }
+  complete() {
+    this.isComplete = true;
+    this.title = "* " + this.title;
+  }
+  uncomplete() {
+    this.isComplete = false;
+    this.title = this.title.replace("* ", "");
   }
 }
 
@@ -64,12 +108,12 @@ class ToDoData {
     return this.list;
   }
   addToDo(title) {
-    this.list.push(title);
+    this.list.push(new ToDoItem(title));
     LSController.save(this);
     this.container.show(this);
   }
   updateToDo(title, index) {
-    this.list[index] = title;
+    this.list[index].setTitle(title);
     LSController.save(this);
     this.container.show(this);
   }
@@ -77,6 +121,19 @@ class ToDoData {
     this.list.splice(index, 1);
     LSController.save(this);
     this.container.show(this);
+  }
+  completeToDo(index) {
+    this.list[index].complete();
+    LSController.save(this);
+    this.container.show(this);
+  }
+  uncompleteToDo(index) {
+    this.list[index].uncomplete();
+    LSController.save(this);
+    this.container.show(this);
+  }
+  isCompleteToDO(index) {
+    return this.list[index].isComplete;
   }
 }
 
