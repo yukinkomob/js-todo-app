@@ -40,6 +40,7 @@ class Container {
       });
     } else {
       completeButton.addEventListener("click", (event) => {
+        console.log("i: " + index);
         data.completeToDo(index);
       });
     }
@@ -99,7 +100,9 @@ class ToDoData {
   constructor() {
     this.todoListTag = "todoList";
     this.container = new Container();
-    const list = LocalStorageController.load(this.todoListTag);
+    let list = LocalStorageController.load(this.todoListTag);
+    list = list.map((item) => new ToDoItem(item.title, item.isComplete));
+
     // Null合体演算子を利用するとコードの色表記がおかしくなるので、if~elseを利用
     if (list) {
       this.list = list;
@@ -131,6 +134,7 @@ class ToDoData {
   }
   // ToDO項目を完了状態に更新
   completeToDo(index) {
+    console.log(this);
     this.list[index].complete();
     LocalStorageController.save(this.todoListTag, this);
     this.container.show(this);
