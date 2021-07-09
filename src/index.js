@@ -1,4 +1,6 @@
+// ToDoコンテナ（<div id="container">）の中身を作成するクラス
 class Container {
+  // ToDoコンテナを表示する
   show(data) {
     const list = data.list;
     let container = document.getElementById("container");
@@ -15,10 +17,12 @@ class Container {
       container.appendChild(div);
     });
   }
+  // ToDoコンテナの内容をリセットする
   resetContainer(container) {
     const clone = container.cloneNode(false);
     container.parentNode.replaceChild(clone, container);
   }
+  // ToDo項目を作成する
   createToDoDiv(title, data, index) {
     const div = document.createElement("div");
     div.textContent = title;
@@ -68,30 +72,28 @@ class Container {
   }
 }
 
+// ToDoの状態管理クラス
 class ToDoItem {
   constructor(title, isComplete = false) {
     this.title = title;
     this.isComplete = isComplete;
-  }
-  setTitle(title) {
-    this.title = title;
-  }
-  getTitle() {
-    return this.title;
   }
   isComplete() {
     return this.isComplete;
   }
   complete() {
     this.isComplete = true;
+    // 完了状態の場合、"* 文字列" のようにする
     this.title = "* " + this.title;
   }
   uncomplete() {
     this.isComplete = false;
+    // "* 文字列"の"*"を除外する
     this.title = this.title.replace("* ", "");
   }
 }
 
+// ToDoのデータ管理クラス
 class ToDoData {
   constructor() {
     this.container = new Container();
@@ -107,41 +109,50 @@ class ToDoData {
   list() {
     return this.list;
   }
+  // ToDO項目を追加
   addToDo(title) {
     this.list.push(new ToDoItem(title));
     LSController.save(this);
     this.container.show(this);
   }
+  // ToDO項目を更新
   updateToDo(title, index) {
-    this.list[index].setTitle(title);
+    this.list[index].title = title;
     LSController.save(this);
     this.container.show(this);
   }
+  // ToDO項目を削除
   removeToDo(index) {
     this.list.splice(index, 1);
     LSController.save(this);
     this.container.show(this);
   }
+  // ToDO項目を完了状態に更新
   completeToDo(index) {
     this.list[index].complete();
     LSController.save(this);
     this.container.show(this);
   }
+  // ToDO項目を未完了状態に更新
   uncompleteToDo(index) {
     this.list[index].uncomplete();
     LSController.save(this);
     this.container.show(this);
   }
+  // ToDO項目の完了状態をチェック
   isCompleteToDO(index) {
     return this.list[index].isComplete;
   }
 }
 
+// ローカルストレージの管理を行うクラス
 class LSController {
+  // ローカルストレージにデータを保存
   static save(data) {
     const json = JSON.stringify(data.list);
     localStorage.setItem("todoList", json);
   }
+  // ローカルストレージからデータを読込
   static load() {
     let getjson;
     try {
@@ -156,6 +167,7 @@ class LSController {
 
 const data = new ToDoData();
 
+// 登録フォームにおける登録ボタンのクリックイベント
 var input_submit = document.querySelector("input[type=submit]");
 input_submit.addEventListener("click", function (e) {
   e.preventDefault();
