@@ -17,6 +17,7 @@ class Container {
       container.appendChild(div);
     });
   }
+
   // ToDoコンテナの内容をリセットする
   resetContainer(container) {
     const clone = container.cloneNode(false);
@@ -96,8 +97,9 @@ class ToDoItem {
 // ToDoのデータ管理クラス
 class ToDoData {
   constructor() {
+    this.todoListTag = "todoList";
     this.container = new Container();
-    const list = LocalStorageController.load();
+    const list = LocalStorageController.load(this.todoListTag);
     // Null合体演算子を利用するとコードの色表記がおかしくなるので、if~elseを利用
     if (list) {
       this.list = list;
@@ -112,31 +114,31 @@ class ToDoData {
   // ToDO項目を追加
   addToDo(title) {
     this.list.push(new ToDoItem(title));
-    LocalStorageController.save(this);
+    LocalStorageController.save(this.todoListTag, this);
     this.container.show(this);
   }
   // ToDO項目を更新
   updateToDo(title, index) {
     this.list[index].title = title;
-    LocalStorageController.save(this);
+    LocalStorageController.save(this.todoListTag, this);
     this.container.show(this);
   }
   // ToDO項目を削除
   removeToDo(index) {
     this.list.splice(index, 1);
-    LocalStorageController.save(this);
+    LocalStorageController.save(this.todoListTag, this);
     this.container.show(this);
   }
   // ToDO項目を完了状態に更新
   completeToDo(index) {
     this.list[index].complete();
-    LocalStorageController.save(this);
+    LocalStorageController.save(this.todoListTag, this);
     this.container.show(this);
   }
   // ToDO項目を未完了状態に更新
   uncompleteToDo(index) {
     this.list[index].uncomplete();
-    LocalStorageController.save(this);
+    LocalStorageController.save(this.todoListTag, this);
     this.container.show(this);
   }
   // ToDO項目の完了状態をチェック
@@ -148,15 +150,15 @@ class ToDoData {
 // ローカルストレージの管理を行うクラス
 class LocalStorageController {
   // ローカルストレージにデータを保存
-  static save(data) {
+  static save(key, data) {
     const json = JSON.stringify(data.list);
-    localStorage.setItem("todoList", json);
+    localStorage.setItem(key, json);
   }
   // ローカルストレージからデータを読込
-  static load() {
+  static load(key) {
     let getjson;
     try {
-      getjson = localStorage.getItem("todoList");
+      getjson = localStorage.getItem(key);
       return JSON.parse(getjson);
     } catch (e) {
       console.log(e.message);
