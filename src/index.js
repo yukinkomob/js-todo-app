@@ -168,12 +168,12 @@ class LSController {
 const data = new ToDoData();
 
 // 登録フォームにおける登録ボタンのクリックイベント
-var input_submit = document.querySelector("input[type=submit]");
-input_submit.addEventListener("click", function (e) {
+var inputSubmit = document.querySelector("input[type=submit]");
+inputSubmit.addEventListener("click", function (e) {
   e.preventDefault();
-  const input_name = document.querySelector("input[name=title]");
-  const title = input_name.value;
+  const inputName = document.querySelector("input[name=title]");
+  const title = inputName.value;
   data.addToDo(title);
 
-  input_name.value = "";
+  inputName.value = "";
 });
