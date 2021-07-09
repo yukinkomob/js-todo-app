@@ -97,7 +97,7 @@ class ToDoItem {
 class ToDoData {
   constructor() {
     this.container = new Container();
-    const list = LSController.load();
+    const list = LocalStorageController.load();
     // Null合体演算子を利用するとコードの色表記がおかしくなるので、if~elseを利用
     if (list) {
       this.list = list;
@@ -112,31 +112,31 @@ class ToDoData {
   // ToDO項目を追加
   addToDo(title) {
     this.list.push(new ToDoItem(title));
-    LSController.save(this);
+    LocalStorageController.save(this);
     this.container.show(this);
   }
   // ToDO項目を更新
   updateToDo(title, index) {
     this.list[index].title = title;
-    LSController.save(this);
+    LocalStorageController.save(this);
     this.container.show(this);
   }
   // ToDO項目を削除
   removeToDo(index) {
     this.list.splice(index, 1);
-    LSController.save(this);
+    LocalStorageController.save(this);
     this.container.show(this);
   }
   // ToDO項目を完了状態に更新
   completeToDo(index) {
     this.list[index].complete();
-    LSController.save(this);
+    LocalStorageController.save(this);
     this.container.show(this);
   }
   // ToDO項目を未完了状態に更新
   uncompleteToDo(index) {
     this.list[index].uncomplete();
-    LSController.save(this);
+    LocalStorageController.save(this);
     this.container.show(this);
   }
   // ToDO項目の完了状態をチェック
@@ -146,7 +146,7 @@ class ToDoData {
 }
 
 // ローカルストレージの管理を行うクラス
-class LSController {
+class LocalStorageController {
   // ローカルストレージにデータを保存
   static save(data) {
     const json = JSON.stringify(data.list);
